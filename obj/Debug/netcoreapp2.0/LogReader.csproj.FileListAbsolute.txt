@@ -1,0 +1,11 @@
+/Users/bhdleon/Projects/NETCore/LogReader/bin/Debug/netcoreapp2.0/LogReader.deps.json
+/Users/bhdleon/Projects/NETCore/LogReader/bin/Debug/netcoreapp2.0/LogReader.runtimeconfig.json
+/Users/bhdleon/Projects/NETCore/LogReader/bin/Debug/netcoreapp2.0/LogReader.runtimeconfig.dev.json
+/Users/bhdleon/Projects/NETCore/LogReader/bin/Debug/netcoreapp2.0/LogReader.dll
+/Users/bhdleon/Projects/NETCore/LogReader/bin/Debug/netcoreapp2.0/LogReader.pdb
+/Users/bhdleon/Projects/NETCore/LogReader/obj/Debug/netcoreapp2.0/LogReader.csprojResolveAssemblyReference.cache
+/Users/bhdleon/Projects/NETCore/LogReader/obj/Debug/netcoreapp2.0/LogReader.csproj.CoreCompileInputs.cache
+/Users/bhdleon/Projects/NETCore/LogReader/obj/Debug/netcoreapp2.0/LogReader.AssemblyInfoInputs.cache
+/Users/bhdleon/Projects/NETCore/LogReader/obj/Debug/netcoreapp2.0/LogReader.AssemblyInfo.cs
+/Users/bhdleon/Projects/NETCore/LogReader/obj/Debug/netcoreapp2.0/LogReader.dll
+/Users/bhdleon/Projects/NETCore/LogReader/obj/Debug/netcoreapp2.0/LogReader.pdb

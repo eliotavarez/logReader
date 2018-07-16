@@ -1,0 +1,4 @@
+MSGBO001 - <Probando><PrimerTag>Hola mundo</PrimerTag></Probando>
+MSGBO001 - <Probando><PrimerTag>Hola mundo 2</PrimerTag></Probando>
+MSGBO002 - Hola
+MSGBO003 - {"primertTag":"Saludos","arreglo":[{"segundoTag":"3000"}]}
