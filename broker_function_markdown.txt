@@ -1,0 +1,12 @@
+====== {Name} ======
+{Description}
+
+==== Request ====
+<code xml>
+{Request}
+</code>
+
+==== Response ====
+<code xml>
+{Response}
+</code>

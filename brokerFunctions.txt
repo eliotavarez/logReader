@@ -1,0 +1,6 @@
+MSGBO40001;Descripción de la función;MSGBO40001
+MSGBO30001;Descripción de la función;MSGBO30001
+MSGBO30072;Descripción de la función;MSGBO30072
+MSGBO20003;Descripción de la función;MSGBO20003
+MSGBO10005;Descripción de la función;MSGBO10005
+MSGF0800011;Descripción de la función;MSGF0800011
