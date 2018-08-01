@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace LogReader {
     class Program {
+        private const string brokerLog = "/broker.log";
         static List<string> links = new List<string> ();
         static string wikiPath = @"C:/wamp/www/dokuwiki/data/pages/";
         static List<BrokerFunction> brokerFuntions;
@@ -16,7 +17,7 @@ namespace LogReader {
         static void Main (string[] args) {
             brokerFuntions = LoadBrokerFunctions ();
             // Leer el log
-            string[] rows = System.IO.File.ReadAllLines (Directory.GetCurrentDirectory () + "/broker20180618_15.log");
+            string[] rows = System.IO.File.ReadAllLines (Directory.GetCurrentDirectory () + brokerLog);
 
             // Leer la trama XXX
             foreach (var row in rows) {
@@ -31,21 +32,27 @@ namespace LogReader {
                 }
             }
 
-            SetBrokerWiki ();
+            //SetBrokerWiki ();
         }
 
         private static void LoadRequest (string row) {
-            string xml = row.Substring (151);
+            string xml = row.Substring (row.IndexOf ('<'));
             string correlationId = row.Substring (51, 97).Split (':') [0];
 
-            XDocument document = XDocument.Parse (xml);
-            string functionName = (string) (from el in document.Descendants ("FunctionName") select el).First ();
+            try {
+                if (xml.IndexOf ("ns:") < 0) {
+                    XDocument document = XDocument.Parse (xml);
+                    string functionName = (string) (from el in document.Descendants ("FunctionName") select el).First ();
 
-            // Verificar si la funcion esta en el listado                    
-            BrokerFunction brokerFunction = brokerFuntions.Find (x => x.Name.Equals (functionName));
-            if (brokerFunction != null) {
-                brokerFunction.CorrelationId = correlationId;
-                brokerFunction.Request = document;
+                    // Verificar si la funcion esta en el listado                    
+                    BrokerFunction brokerFunction = brokerFuntions.Find (x => x.Name.Equals (functionName));
+                    if (brokerFunction != null) {
+                        brokerFunction.CorrelationId = correlationId;
+                        brokerFunction.Request = document;
+                    }
+                }
+            } catch (System.Exception ex) {
+                Console.WriteLine (ex.Message);
             }
         }
 
@@ -67,8 +74,8 @@ namespace LogReader {
                 dokufile = dokufile.Replace ("{Request}", brokerFunction.Request.ToString ());
                 dokufile = dokufile.Replace ("{Response}", brokerFunction.Response.ToString ());
 
-                string path = wikiPath + brokerFunction.FileName () + ".txt";
-                //string path = Directory.GetCurrentDirectory () + "/Tramas/" + fileName;
+                //string path = wikiPath + brokerFunction.FileName () + ".txt";
+                string path = Directory.GetCurrentDirectory () + "/Tramas/" + brokerFunction.FileName ();
                 System.IO.File.WriteAllText (path: path, contents: dokufile);
 
                 links.Add (string.Format ("[[{0}|{1}]]", brokerFunction.FileName (), brokerFunction.Alias));
