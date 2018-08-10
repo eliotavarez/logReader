@@ -9,30 +9,36 @@ using Newtonsoft.Json.Linq;
 
 namespace LogReader {
     class Program {
-        private const string brokerLog = "/broker.log";
+
         static List<string> links = new List<string> ();
         static string wikiPath = @"C:/wamp/www/dokuwiki/data/pages/";
         static List<BrokerFunction> brokerFuntions;
 
         static void Main (string[] args) {
+            string brokerLogs = Directory.GetCurrentDirectory () + "/logs";
             brokerFuntions = LoadBrokerFunctions ();
-            // Leer el log
-            string[] rows = System.IO.File.ReadAllLines (Directory.GetCurrentDirectory () + brokerLog);
 
-            // Leer la trama XXX
-            foreach (var row in rows) {
-                if (brokerFuntions.Count > 0) {
+            foreach (var File in System.IO.Directory.GetFiles (path: brokerLogs)) {
+                if (brokerFuntions.Count == 0) break;
+
+                // Leer el log
+                string[] rows = System.IO.File.ReadAllLines (File);
+
+                // Leer la trama XXX
+                foreach (var row in rows) {
+                    if (brokerFuntions.Count == 0) break;
+
                     if (row.IndexOf ("<FunctionName>") > 0) {
                         LoadRequest (row);
                     } else if (row.IndexOf ("MessageId") > 0) {
-                        LoadResponse (row);
+                        BrokerFunction brokerFunction = LoadResponse (row);
+                        if (brokerFunction != null) {
+                            CreateAndSaveFile (brokerFunction);
+                        }
                     }
-                } else {
-                    break;
                 }
             }
-
-            //SetBrokerWiki ();
+            SetBrokerWiki ();
         }
 
         private static void LoadRequest (string row) {
@@ -40,6 +46,7 @@ namespace LogReader {
             string correlationId = row.Substring (51, 97).Split (':') [0];
 
             try {
+                // Verificando si no es un request SOAP
                 if (xml.IndexOf ("ns:") < 0) {
                     XDocument document = XDocument.Parse (xml);
                     string functionName = (string) (from el in document.Descendants ("FunctionName") select el).First ();
@@ -56,7 +63,7 @@ namespace LogReader {
             }
         }
 
-        private static void LoadResponse (string row) {
+        private static BrokerFunction LoadResponse (string row) {
             string xml = row.Substring (151);
             string[] correlationId = row.Substring (51, 97).Split (':');
 
@@ -66,21 +73,25 @@ namespace LogReader {
             if (brokerFunction != null) {
                 XDocument document = XDocument.Parse (xml);
                 brokerFunction.Response = document;
-
-                // Plantilla
-                string dokufile = System.IO.File.ReadAllText (Directory.GetCurrentDirectory () + "/broker_function_markdown.txt");
-                dokufile = dokufile.Replace ("{Name}", brokerFunction.Name);
-                dokufile = dokufile.Replace ("{Description}", brokerFunction.Description);
-                dokufile = dokufile.Replace ("{Request}", brokerFunction.Request.ToString ());
-                dokufile = dokufile.Replace ("{Response}", brokerFunction.Response.ToString ());
-
-                //string path = wikiPath + brokerFunction.FileName () + ".txt";
-                string path = Directory.GetCurrentDirectory () + "/Tramas/" + brokerFunction.FileName ();
-                System.IO.File.WriteAllText (path: path, contents: dokufile);
-
-                links.Add (string.Format ("[[{0}|{1}]]", brokerFunction.FileName (), brokerFunction.Alias));
-                brokerFuntions.Remove (brokerFunction);
             }
+
+            return brokerFunction;
+        }
+
+        private static void CreateAndSaveFile (BrokerFunction brokerFunction) {
+            // Plantilla
+            string dokufile = System.IO.File.ReadAllText (Directory.GetCurrentDirectory () + "/broker_function_markdown.txt");
+            dokufile = dokufile.Replace ("{Name}", brokerFunction.Name);
+            dokufile = dokufile.Replace ("{Description}", brokerFunction.Description);
+            dokufile = dokufile.Replace ("{Request}", brokerFunction.Request.ToString ());
+            dokufile = dokufile.Replace ("{Response}", brokerFunction.Response.ToString ());
+
+            string path = wikiPath + brokerFunction.FileName + ".txt";
+            //string path = Directory.GetCurrentDirectory () + "/tramas/" + brokerFunction.FileName;
+            System.IO.File.WriteAllText (path: path, contents: dokufile);
+
+            links.Add (string.Format ("[[{0}|{1}]]", brokerFunction.FileName, brokerFunction.Alias));
+            brokerFuntions.Remove (brokerFunction);
         }
 
         private static void SetBrokerWiki () {
@@ -96,14 +107,23 @@ namespace LogReader {
 
             main = main.Replace ("{Personal}", string.Join ("\n    * ", links.Union (actualLinks)));
             System.IO.File.WriteAllText (path: wikiPath + "/start.txt", contents: main);
+
+            Console.WriteLine ("Funciones no encontradas:");
+            brokerFuntions.ForEach (function => Console.WriteLine ($"* {function.Name}"));
         }
 
         // Cargar funciones de Broker que se van a documentar
         static List<BrokerFunction> LoadBrokerFunctions () {
-            string[] rows = System.IO.File.ReadAllLines (Directory.GetCurrentDirectory () + "/brokerFunctions.txt");
+            string path = Directory.GetCurrentDirectory () + "/brokerFunctions.txt";
+
+            Console.WriteLine ("Funciones de Broker a documentar, desde la ruta: " + path);
+            string[] rows = System.IO.File.ReadAllLines (path: path);
+
             List<BrokerFunction> brokerFunctions = new List<BrokerFunction> ();
 
             foreach (var row in rows) {
+                if (row.ElementAt (0) == '/') continue;
+
                 string[] temp = row.Split (';');
 
                 BrokerFunction funcion = new BrokerFunction () {
@@ -113,6 +133,7 @@ namespace LogReader {
                 };
 
                 brokerFunctions.Add (funcion);
+                Console.WriteLine ($"* {temp[0]}");
             }
 
             return brokerFunctions;

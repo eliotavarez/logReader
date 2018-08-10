@@ -9,8 +9,6 @@ namespace LogReader {
         public XDocument Request { get; set; }
         public XDocument Response { get; set; }
 
-        public string FileName () {
-            return "broker_" + this.Name.ToLower ();
-        }
+        public string FileName => "broker_" + this.Name.ToLower ();
     }
 }

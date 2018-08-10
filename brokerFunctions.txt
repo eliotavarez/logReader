@@ -1,6 +1,9 @@
-MSGBO40001;Descripción de la función;MSGBO40001
-MSGBO30001;Descripción de la función;MSGBO30001
-MSGBO30072;Descripción de la función;MSGBO30072
-MSGBO20003;Descripción de la función;MSGBO20003
-MSGBO10005;Descripción de la función;MSGBO10005
-MSGF0800011;Descripción de la función;MSGF0800011
+// Dashboard - 360
+MSGBO10002;Consulta de Cuentas;MSGBO10002_Consulta de Cuentas
+MSGBO40024;Consulta de Pensiones;MSGBO40024_Consulta de Pensiones
+MSGBO20007;Consulta de Credicuentas;MSGBO20007_Consulta de Credicuentas
+MSGF0800011;Consulta de Fondos;MSGF0800011_Consulta de Fondos
+MSGBO20001;Consulta de Tarjetas de Creditos;MSGBO20001_Consulta de Tarjetas de Creditos
+MSG0900147;Consulta de Tarjetas de Creditos;MSG0900147_Consulta de Tarjetas de Creditos
+MSGBO03001;Consulta de Tarjetas Prepagos;MSGBO03001_Consulta de Tarjetas Prepagos
+MSG01FE002;Consulta de Financiamientos Electronicos;MSG01FE002_Consulta de Financiamientos Electronicos
